@@ -37,3 +37,10 @@ WHERE
     hd.TRI_GIA > 100000000
 ORDER BY 
     hd.NGAY_GIAO_DICH DESC;
+
+
+SELECT COUNT(*) AS SoLuongKhachHang
+FROM dbo.KhachHang kh
+WHERE kh.GIOI_TINH = 'Ms' 
+  AND kh.DIA_CHI_KH LIKE N'%Quảng Bình%'
+  AND kh.MA_KH NOT IN (SELECT DISTINCT MA_KH FROM dbo.HoaDon);
