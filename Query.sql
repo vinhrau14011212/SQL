@@ -63,3 +63,36 @@ JOIN dbo.SanPham sp
 WHERE sp.MAT_HANG = 'Chain'
   AND YEAR(hd.NGAY_GIAO_DICH) = 2019
   AND hd.BUY_SELL = 'SELL';
+
+
+SELECT
+    cn.MA_CUA_HANG                         AS N'Mã cửa hàng',
+    cn.DIA_DIEM                            AS N'Địa điểm cửa hàng',
+
+    COUNT(DISTINCT hd.MA_KH)               AS N'Số lượng khách hàng',
+
+    SUM(hd.TRI_GIA)                        AS N'Tổng trị giá mua',
+
+    AVG(hd.TRI_GIA)                        AS N'Trị giá trung bình mỗi đơn',
+
+    MIN(CASE 
+            WHEN hd.TRI_GIA > 0 
+            THEN hd.TRI_GIA 
+        END)                               AS N'Trị giá đơn hàng nhỏ nhất',
+
+    MAX(CASE 
+            WHEN hd.TRI_GIA > 0 
+            THEN hd.TRI_GIA 
+        END)                               AS N'Trị giá đơn hàng lớn nhất'
+
+FROM dbo.HoaDon hd
+JOIN dbo.ChiNhanh cn
+    ON hd.MA_CUA_HANG = cn.MA_CUA_HANG
+
+WHERE hd.BUY_SELL = 'SELL'
+  AND hd.NGAY_GIAO_DICH >= '2020-01-01'
+  AND hd.NGAY_GIAO_DICH <  '2021-01-01'
+
+GROUP BY
+    cn.MA_CUA_HANG,
+    cn.DIA_DIEM;
