@@ -44,3 +44,22 @@ FROM dbo.KhachHang kh
 WHERE kh.GIOI_TINH = 'Ms' 
   AND kh.DIA_CHI_KH LIKE N'%Quảng Bình%'
   AND kh.MA_KH NOT IN (SELECT DISTINCT MA_KH FROM dbo.HoaDon);
+
+
+SELECT 
+    nv.TEN_NHAN_VIEN       AS N'Tên nhân viên bán',
+    kh.TEN_KHACH_HANG      AS N'Tên khách hàng',
+    cn.DIA_DIEM            AS N'Địa điểm thực hiện giao dịch',
+    hd.TRI_GIA             AS N'Giá trị giao dịch'
+FROM dbo.HoaDon hd
+JOIN dbo.NhanVien nv 
+    ON hd.MA_NV_BAN = nv.MA_NHAN_VIEN
+JOIN dbo.KhachHang kh 
+    ON hd.MA_KH = kh.MA_KH
+JOIN dbo.ChiNhanh cn 
+    ON hd.MA_CUA_HANG = cn.MA_CUA_HANG
+JOIN dbo.SanPham sp 
+    ON hd.MA_MAT_HANG = sp.MA_MAT_HANG
+WHERE sp.MAT_HANG = 'Chain'
+  AND YEAR(hd.NGAY_GIAO_DICH) = 2019
+  AND hd.BUY_SELL = 'SELL';
