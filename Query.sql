@@ -96,3 +96,29 @@ WHERE hd.BUY_SELL = 'SELL'
 GROUP BY
     cn.MA_CUA_HANG,
     cn.DIA_DIEM;
+
+
+SELECT
+    DAY(GETDATE())   AS [Ngay],
+    MONTH(GETDATE()) AS [Thang],
+    YEAR(GETDATE())  AS [Nam],
+    kh.MA_KH         AS [Ma KH],
+    kh.TEN_KHACH_HANG AS [Ten KH],
+    CASE
+        -- Chỉ cần còn 1 giao dịch mà (Ngày đến hạn + 2 năm) vẫn > thời điểm chạy query
+        -- (bao gồm cả trường hợp Ngày đến hạn còn ở tương lai)
+        WHEN MAX(CASE 
+                    WHEN hd.DU_NO > 0 
+                     AND DATEADD(YEAR, 2, hd.NGAY_DEN_HAN) > CAST(GETDATE() AS DATE)
+                    THEN 1 ELSE 0
+                 END) = 1
+        THEN 'YES'
+        ELSE NULL
+    END AS [Future]
+FROM dbo.KhachHang kh
+JOIN dbo.HoaDon hd
+    ON hd.MA_KH = kh.MA_KH
+WHERE hd.DU_NO > 0   -- chỉ xét các giao dịch còn dư nợ
+GROUP BY
+    kh.MA_KH,
+    kh.TEN_KHACH_HANG;
